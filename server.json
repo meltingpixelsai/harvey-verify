@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.meltingpixelsai/harvey-verify",
-  "description": "Post-transaction outcome verification for AI agents. LLM-as-judge checks if services delivered what was promised. Quality database with service reputation scores.",
+  "description": "Post-transaction outcome verification. LLM-as-judge for agent service quality.",
   "repository": {
     "url": "https://github.com/meltingpixelsai/harvey-verify",
     "source": "github"
