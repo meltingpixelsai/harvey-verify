@@ -1,0 +1,64 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.meltingpixelsai/harvey-verify",
+  "description": "Post-transaction outcome verification for AI agents. LLM-as-judge checks if services delivered what was promised. Quality database with service reputation scores.",
+  "repository": {
+    "url": "https://github.com/meltingpixelsai/harvey-verify",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@meltingpixels/harvey-verify",
+      "version": "1.0.0",
+      "transport": {
+        "type": "streamable-http",
+        "url": "https://verify.rugslayer.com/mcp"
+      },
+      "environmentVariables": [
+        {
+          "description": "xAI Grok API key for LLM-as-judge verification",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true,
+          "name": "XAI_API_KEY"
+        },
+        {
+          "description": "Supabase URL for quality database",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": false,
+          "name": "SUPABASE_URL"
+        },
+        {
+          "description": "Supabase service role key",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true,
+          "name": "SUPABASE_SERVICE_ROLE_KEY"
+        },
+        {
+          "description": "Solana wallet address for receiving USDC payments",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "PAYMENT_WALLET"
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "x402": {
+      "network": "solana",
+      "currency": "USDC",
+      "facilitator": "https://facilitator.payai.network",
+      "tools": {
+        "verify_outcome": "$0.01",
+        "get_service_quality": "$0.005",
+        "report_outcome": "$0.002"
+      },
+      "free_tools": ["list_tools", "health"]
+    }
+  }
+}

@@ -1,0 +1,74 @@
+import { getSupabase } from "../lib/supabase-client.js";
+
+interface ServiceQuality {
+  service_id: string;
+  total_verifications: number;
+  avg_completeness: number;
+  avg_accuracy: number;
+  pass_rate: number;
+  format_compliance_rate: number;
+  sla_compliance_rate: number;
+  recent_trend: "improving" | "stable" | "declining" | "insufficient_data";
+  last_verified_at: string | null;
+}
+
+/** Get aggregated quality scores for a service */
+export async function getServiceQuality(serviceId: string): Promise<ServiceQuality> {
+  const sb = getSupabase();
+
+  const { data, error } = await sb
+    .from("verification_results")
+    .select("completeness_score, accuracy_score, format_compliance, sla_met, overall_pass, created_at")
+    .eq("service_id", serviceId)
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  if (error) throw new Error(`Quality query failed: ${error.message}`);
+
+  if (!data || data.length === 0) {
+    return {
+      service_id: serviceId,
+      total_verifications: 0,
+      avg_completeness: 0,
+      avg_accuracy: 0,
+      pass_rate: 0,
+      format_compliance_rate: 0,
+      sla_compliance_rate: 0,
+      recent_trend: "insufficient_data",
+      last_verified_at: null,
+    };
+  }
+
+  const total = data.length;
+  const avgCompleteness = Math.round(data.reduce((s, r) => s + (r.completeness_score ?? 0), 0) / total);
+  const avgAccuracy = Math.round(data.reduce((s, r) => s + (r.accuracy_score ?? 0), 0) / total);
+  const passRate = Math.round((data.filter((r) => r.overall_pass).length / total) * 100);
+  const formatRate = Math.round((data.filter((r) => r.format_compliance).length / total) * 100);
+  const slaRate = Math.round((data.filter((r) => r.sla_met).length / total) * 100);
+
+  // Calculate trend from recent vs older results
+  let trend: "improving" | "stable" | "declining" | "insufficient_data" = "insufficient_data";
+  if (total >= 6) {
+    const half = Math.floor(total / 2);
+    const recent = data.slice(0, half);
+    const older = data.slice(half);
+    const recentAvg = recent.reduce((s, r) => s + (r.completeness_score ?? 0) + (r.accuracy_score ?? 0), 0) / (recent.length * 2);
+    const olderAvg = older.reduce((s, r) => s + (r.completeness_score ?? 0) + (r.accuracy_score ?? 0), 0) / (older.length * 2);
+    const diff = recentAvg - olderAvg;
+    if (diff > 5) trend = "improving";
+    else if (diff < -5) trend = "declining";
+    else trend = "stable";
+  }
+
+  return {
+    service_id: serviceId,
+    total_verifications: total,
+    avg_completeness: avgCompleteness,
+    avg_accuracy: avgAccuracy,
+    pass_rate: passRate,
+    format_compliance_rate: formatRate,
+    sla_compliance_rate: slaRate,
+    recent_trend: trend,
+    last_verified_at: data[0].created_at,
+  };
+}
