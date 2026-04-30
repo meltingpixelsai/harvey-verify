@@ -1,15 +1,15 @@
 {
-  "name": "@meltingpixels/harvey-verify",
+  "name": "@meltingpixels/zero-core-verify",
   "version": "1.0.0",
-  "description": "x402-paid MCP server for post-transaction outcome verification. LLM-as-judge verifies if services delivered what was promised. Pay-per-call USDC on Solana.",
+  "description": "x402-paid MCP server for post-transaction outcome verification. LLM-as-judge verifies if services delivered what was promised. Pay-per-call USDC on Solana. Zero Core (formerly Harvey) Verify.",
   "type": "module",
-  "mcpName": "io.github.meltingpixelsai/harvey-verify",
-  "keywords": ["mcp", "x402", "usdc", "ai-agents", "verification", "quality", "outcome-verification", "llm-judge"],
+  "mcpName": "io.github.meltingpixelsai/zero-core-verify",
+  "keywords": ["mcp", "x402", "usdc", "ai-agents", "verification", "quality", "outcome-verification", "llm-judge", "zero-core"],
   "author": "MeltingPixels <jeremy@meltingpixels.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/meltingpixelsai/harvey-verify"
+    "url": "https://github.com/meltingpixelsai/zero-core-verify"
   },
   "homepage": "https://verify.rugslayer.com",
   "scripts": {
